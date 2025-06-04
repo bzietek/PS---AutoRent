@@ -16,10 +16,11 @@ class M250514064249InitAdmin extends Migration
         $this->insert('APP_USER', [
             'id' => 1,
             'role' => Role::ROLE_ADMINISTRATOR,
-            'username' => 'root',
+            'name' => 'Admin',
+            'surname' => 'Admin',
             'email' => 'root@domain.com',
             'password' => Yii::$app->getSecurity()->generatePasswordHash('root'),
-            'visible_name' => 'Main Admin',
+            'active' => true,
         ]);
     }
 

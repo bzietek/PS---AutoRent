@@ -16,13 +16,13 @@ class M250508171859InitUser extends Migration
         $this->execute('CREATE SEQUENCE user_seq START WITH 1 INCREMENT BY 1');
         $this->createTable('APP_USER', [
             'id' => $this->primaryKey(),
-            'username' => $this->string(40)->unique()->notNull(),
+            'name' => $this->string(40)->notNull(),
+            'surname' => $this->string(40)->notNull(),
             'email' => $this->string(40)->unique()->notNull(),
             'password' => $this->string(150)->notNull(),
-            'visible_name' => $this->string(30)->unique()->notNull(),
+            'phone_number' => $this->string(12),
             'role' => $this->string(40)->notNull(),
-            'modified_at' => $this->dateTime()->defaultExpression(new \yii\db\Expression('CURRENT_TIMESTAMP')),
-            'created_at' => $this->dateTime()->defaultExpression(new \yii\db\Expression('CURRENT_TIMESTAMP')),
+            'active' => $this->boolean()->notNull(),
         ]);
         $this->execute('
         CREATE TRIGGER trg_app_user_id
