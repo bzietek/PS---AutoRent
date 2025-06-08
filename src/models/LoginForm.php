@@ -8,7 +8,7 @@ use yii\base\Model;
 
 class LoginForm extends Model
 {
-    public $username;
+    public $loginField;
     public $password;
     public $rememberMe;
 
@@ -17,8 +17,7 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
-//            ['password', 'compare', 'compareAttribute' => 'validatePassword'],
+            [['loginField', 'password'], 'required'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
         ];
@@ -28,7 +27,7 @@ class LoginForm extends Model
     {
         return array_merge(Parent::attributeLabels(),
             [
-                'username' => \Yii::t('app', 'Username'),
+                'loginField' => \Yii::t('app', 'Email or Phone Number'),
                 'password' => \Yii::t('app', 'Password'),
                 'rememberMe' => \Yii::t('app', 'Remember me'),
             ]
@@ -39,10 +38,8 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!!$user) {
-            }
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect email/phone number or password.');
             }
         }
     }
@@ -58,7 +55,7 @@ class LoginForm extends Model
     public function getUser() : User|null
     {
         if ($this->_user === null) {
-            $this->_user = User::findByUsernameOrEmail($this->username);
+            $this->_user = User::findByEmailOrPhoneNumber($this->loginField);
         }
         return $this->_user;
     }

@@ -3,6 +3,7 @@
 namespace app\models\database\user;
 
 use app\models\Role;
+use app\models\validators\PhoneNumberValidator;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
@@ -20,18 +21,16 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
     public function rules()
     {
         return [
-
-            [['modified_at', 'created_at'], 'default', 'value' => null],
-            [['role'], 'default', 'value' => ''],
+            [['role'], 'default', 'value' => Role::ROLE_CUSTOMER],
             [['id'], 'integer'],
-            [['modified_at', 'created_at'], 'safe'],
-            [['username', 'email', 'role'], 'string', 'max' => 40],
+            [['name', 'surname', 'role'], 'string', 'max' => 40],
+            [['phone_number'], 'string', 'max' => 12],
             [['password'], 'string', 'max' => 150],
-            [['visible_name'], 'string', 'max' => 30],
-            [['id'], 'unique'],
-
+            [['id', 'email', 'phone_number'], 'unique'],
+            [['active'], 'boolean'],
             ['role', 'in', 'range' => array_keys(Role::getRoles())],
             ['email', 'email', 'message' => Yii::t('app', 'Invalid email')],
+            [['phone_number'], PhoneNumberValidator::class],
             [
                 'password',
                 'compare',
@@ -67,27 +66,35 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         ];
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function scenarios()
     {
         return array_merge(
             parent::scenarios(),
             [
                 self::SCENARIO_SIGNUP => [
-                    'id',
-                    'username',
+                    'name',
+                    'surname',
                     'password',
                     'confirmPassword',
                     'email',
-                    'visible_name',
+                    'phone_number',
+                ],
+                self::SCENARIO_EDIT_ADMIN => [
+                    'name',
+                    'surname',
+                    'email',
+                    'phone_number',
                     'role'
                 ],
-                self::SCENARIO_EDIT_ADMIN => ['username', 'email', 'visible_name', 'role'],
                 self::SCENARIO_EDIT_SELF => [
-                    'username',
+                    'name',
+                    'surname',
                     'password',
                     'confirmPassword',
                     'email',
-                    'visible_name',
                     ...(Yii::$app->user->getIdentity()?->role === Role::ROLE_ADMINISTRATOR
                     ? ['role']
                     : ['oldPassword']
@@ -98,30 +105,27 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         );
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return array_merge(
-            parent::rules(),
+            parent::attributeLabels(),
             [
-                'username' => Yii::t('app', 'Username'),
+                'name' => Yii::t('app', 'First Name'),
+                'surname' => Yii::t('app', 'Last Name'),
                 'email' => Yii::t('app', 'Email'),
+                'phone_number' => Yii::t('app', 'Phone Number'),
                 'password' => Yii::t('app', 'Password'),
-                'visible_name' => Yii::t('app', 'Nickname'),
                 'confirmPassword' => Yii::t('app', 'Confirm Password'),
-                'created_at' => Yii::t('app', 'Account creation date'),
+//                'created_at' => Yii::t('app', 'Account creation date'),
+                'active' => Yii::t('app', 'Is account active?'),
                 'rememberMe' => Yii::t('app', 'Remember Me'),
             ]
         );
     }
 
-    public static function sanitizeCharacters($value)
-    {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    }
-
     public function getAuthKey() : string {
         return sha1(
-            'ajBt%81,' . $this->id . $this->created_at . $this->username
+            'ajBt%81,' . $this->id . 'kjsd2'
         );
     }
 
@@ -129,7 +133,8 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         return $this->getAuthKey() === $authKey;
     }
 
-    public function getId() {
+    public function getId(): int|string
+    {
         return $this->id;
     }
 
@@ -138,20 +143,13 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         return $user ?: null;
     }
 
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): null
     {
         return null;
     }
 
-    public static function findByUsernameOrEmail($field) : User|null {
-        return static::findOne(['username' => $field]) ?? static::findOne(['email' => $field]);
-    }
-
-    public static function getIdsByVisibleNameLike($visibleName) : ActiveQuery|array
-    {
-        return array_map(function($arg) {
-            return $arg?->id;
-        }, static::find()->where(['like', 'visible_name', $visibleName])->all());
+    public static function findByEmailOrPhoneNumber($field) : User|null {
+        return static::findOne(['email' => $field]) ?? static::findOne(['phone_number' => $field]);
     }
 
     public function validatePassword($password, $passwordHash = null) : bool {
@@ -161,19 +159,36 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         );
     }
 
-    public function signUp() : bool {
+    public function signUp() : bool
+    {
         $commited = false;
         if ($this->validate()) {
             $commited = $this->save();
-            if (!$commited) {
-                $this->password = $this->confirmPassword;
-            }
         }
         if (!$commited) {
             $this->password = $this->confirmPassword;
             $this->confirmPassword = '';
         }
         return $commited;
+    }
+
+    public function beforeValidate() : bool
+    {
+        if (parent::beforeValidate() === false) {
+            return false;
+        }
+        if (is_string($this->name)) {
+            $this->name = ucfirst(strtolower(trim($this->name)));
+        }
+
+        if (is_string($this->surname)) {
+            $this->surname = ucfirst(strtolower(trim($this->surname)));
+        }
+
+        if (is_string($this->email)) {
+            $this->surname = strtolower(trim($this->surname));
+        }
+        return true;
     }
 
     public function beforeSave($insert) : bool
@@ -194,6 +209,11 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         if ($passwordChanged) {
             $this->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
         }
+        if ($this->active === null) {
+            $this->active = 0;
+        } else {
+            $this->active = (int) $this->active;
+        }
         return true;
     }
 
@@ -212,19 +232,5 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
             return null;
         }
         return $passHash ?? null;
-    }
-
-    public function fillWithNonEmptyAttributes(User $updateFromModel) : bool
-    {
-        foreach ($updateFromModel->attributes as $attribute => $value) {
-            if (
-                isset($value)
-                && is_string($value)
-                && strlen($value) > 0
-            ) {
-                $this->{$attribute} = $value;
-            }
-        }
-        return false;
     }
 }

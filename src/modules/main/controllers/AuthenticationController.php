@@ -41,10 +41,13 @@ class AuthenticationController extends SiteController
     {
         $model = new User();
         $model->scenario = User::SCENARIO_SIGNUP;
-        if ($model->load($this->request->post()) && ($model->role = Role::ROLE_CUSTOMER) && $model->signup()) {
-            return $this->redirect('/login');
+        if ($model->load($this->request->post())) {
+            $model->role = Role::ROLE_CUSTOMER;
+            $model->active = false;
+            if ($model->signup()) {
+                return $this->redirect('/login');
+            }
         }
-
         return $this->render('signup', [
             'model' => $model
         ]);

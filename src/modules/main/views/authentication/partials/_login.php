@@ -13,7 +13,7 @@ $form = ActiveForm::begin([
     'id' => 'login-form',
     'fieldConfig' => [
         'template' => "{label}\n{input}\n{error}",
-        'labelOptions' => ['class' => 'col-lg-1 col-form-label mr-lg-3'],
+        'labelOptions' => ['class' => 'col-lg-4 col-form-label mr-lg-3'],
         'inputOptions' => ['class' => 'col-lg-3 form-control'],
         'errorOptions' => ['class' => 'col-lg-7 text-danger'],
     ],
@@ -22,7 +22,7 @@ $form = ActiveForm::begin([
 ]);
 ?>
 
-<?= $form->field($model, 'username')->textInput(['autofocus' => true]); ?>
+<?= $form->field($model, 'loginField')->textInput(['autofocus' => true]); ?>
 <?= $form->field($model, 'password')->passwordInput(); ?>
 <?= $form->field($model, 'rememberMe')->checkbox([
     'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",

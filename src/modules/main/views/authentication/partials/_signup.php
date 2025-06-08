@@ -20,9 +20,10 @@ $form = ActiveForm::begin([
 ]);
 ?>
 
-<?= $form->field($model, 'username')->textInput(['autofocus' => true]); ?>
+<?= $form->field($model, 'name')->textInput(['autofocus' => true]); ?>
+<?= $form->field($model, 'surname')->textInput(['autofocus' => true]); ?>
 <?= $form->field($model, 'email')->textInput(); ?>
-<?= $form->field($model, 'visible_name')->textInput(); ?>
+<?= $form->field($model, 'phone_number')->textInput(); ?>
 <?= $form->field($model, 'password')->passwordInput(); ?>
 <?= $form->field($model, 'confirmPassword')->passwordInput(); ?>
 

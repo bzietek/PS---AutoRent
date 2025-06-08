@@ -67,7 +67,7 @@ $isAdmin = Yii::$app->user->getIdentity()?->role === Role::ROLE_ADMINISTRATOR;
                             ['label' => Yii::t('app', 'Sign Up'), 'url' => ['/signup']],
                         ]
                         : [
-                            ['label' => Yii::$app->user->getIdentity()->visible_name, 'url' => ['/profile/' . Yii::$app->user->getIdentity()->getId()]],
+                            ['label' => Yii::$app->user->getIdentity()->name, 'url' => ['/profile/' . Yii::$app->user->getIdentity()->getId()]],
                             ['label' => Yii::t('app', 'Logout'), 'url' => ['/logout']],
                         ]
                     )
