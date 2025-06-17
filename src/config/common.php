@@ -36,6 +36,9 @@ $config = [
     'params' => [
         'tables' => [
             'APP_USER',
+            'LOCATION',
+            'CAR',
+            'CAR_ORDER',
         ]
     ],
 ];
