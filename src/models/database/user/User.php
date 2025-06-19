@@ -2,10 +2,8 @@
 
 namespace app\models\database\user;
 
-use app\models\Role;
 use app\models\validators\PhoneNumberValidator;
 use Yii;
-use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
 
 class User extends \app\models\database\generated\APPUSER implements IdentityInterface
@@ -87,7 +85,7 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
                     'surname',
                     'email',
                     'phone_number',
-                    'role'
+                    'role',
                 ],
                 self::SCENARIO_EDIT_SELF => [
                     'name',
@@ -186,7 +184,7 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         }
 
         if (is_string($this->email)) {
-            $this->surname = strtolower(trim($this->surname));
+            $this->email = strtolower(trim($this->email));
         }
         return true;
     }

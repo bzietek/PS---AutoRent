@@ -2,8 +2,8 @@
 
 namespace app\models;
 
+use app\models\database\user\Role;
 use app\models\database\user\User;
-use app\models\Role;
 use yii\rbac\CheckAccessInterface;
 
 class AccessChecker implements CheckAccessInterface

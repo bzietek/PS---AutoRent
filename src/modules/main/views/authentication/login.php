@@ -1,14 +1,10 @@
 <?php
 
-use app\models\LoginForm;
+use app\models\database\user\LoginForm;
 
 
 /** @var yii\web\View $this */
 /** @var LoginForm $model */
-
-
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
