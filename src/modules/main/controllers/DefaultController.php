@@ -3,7 +3,6 @@
 namespace app\modules\main\controllers;
 
 use app\controllers\SiteController;
-use app\models\Role;
 use yii\web\HttpException;
 
 class DefaultController extends SiteController

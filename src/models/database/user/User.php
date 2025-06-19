@@ -201,6 +201,8 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
             $this->$attribute = static::sanitizeCharacters($this->$attribute);
         }
         $passwordChanged = $this->password !== $this->getPasswordHash();
+        if ($this->email !== null && $this->email !==  $this->getOldAttribute('email')) {
+            $this->active = 0;
         if ($this->validate(null, false) === false) {
             return false;
         }

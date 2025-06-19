@@ -3,6 +3,9 @@
 namespace app\controllers;
 
 use app\models\AccessControl;
+use app\models\database\user\Role;
+use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class SiteController extends Controller
@@ -53,12 +56,39 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
                 'class' => '\yii\web\ErrorAction',
             ],
         ];
+    }
+
+    public function beforeAction($action) : \yii\web\Response|bool
+    {
+        if (parent::beforeAction($action) === false) {
+            return false;
+        }
+        $user = Yii::$app->user;
+        if ($user->isGuest) {
+            return true;
+        }
+        $user = $user->getIdentity();
+        if (
+            !$user->active
+            && $user->role === Role::ROLE_CUSTOMER
+            && (
+                !in_array($action->actionMethod ?? 'error', [
+                    'error',
+                    'actionInactive',
+                    'actionLogout',
+                    'actionActivate',
+                ])
+            )
+        ) {
+            return $this->redirect(URL::to(['/inactive']));
+        }
+        return true;
     }
 }

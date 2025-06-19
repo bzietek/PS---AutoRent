@@ -3,11 +3,10 @@
 namespace app\modules\main\controllers;
 
 use app\controllers\SiteController;
-use app\models\Role;
-use app\models\LoginForm;
-use yii\web\HttpException;
+use app\models\database\user\LoginForm;
+use app\models\database\user\Role;
 use app\models\database\user\User;
-use \Yii;
+use Yii;
 
 class AuthenticationController extends SiteController
 {
@@ -51,5 +50,31 @@ class AuthenticationController extends SiteController
         return $this->render('signup', [
             'model' => $model
         ]);
+    }
+
+    public function actionInactive()
+    {
+        $user = Yii::$app->user->getIdentity();
+        if ($user->active) {
+            return $this->redirect('/');
+        }
+        return $this->render('inactive', []);
+    }
+
+    public function actionActivate()
+    {
+        //TODO: add token checking logic
+        $user = Yii::$app->user->getIdentity();
+        if (YII_ENV === 'dev') {
+            $user->active = true;
+            $user->save();
+            return $this->render('activated', []);
+        }
+        if ($user->active) {
+            return $this->redirect('/');
+        }
+        $user->active = true;
+        $user->save();
+        return $this->render('activated', []);
     }
 }

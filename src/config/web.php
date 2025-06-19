@@ -7,11 +7,11 @@ $pathingRules = [
     '/login' => 'main/authentication/login',
     '/logout' => 'main/authentication/logout',
     '/signup' => 'main/authentication/signup',
+    '/inactive' => 'main/authentication/inactive',
 
     //fallback simple routing
     '/<controller:[\w-]+>' => 'main/<controller>/index',
     '/<action:[\w-]+>' => 'main/default/<action>',
-    '/<module:[\w-]+>/<controller:[\w-]+>' => '<module>/<controller>/index',
     '/<controller:[\w-]+>/<action:[\w-]+>' => 'main/<controller>/<action>',
     '/<module:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>' => '<module>/<controller>/<action>',
 ];
