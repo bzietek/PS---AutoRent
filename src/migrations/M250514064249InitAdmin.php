@@ -2,7 +2,7 @@
 
 namespace app\migrations;
 
-use app\models\Role;
+use app\models\database\user\Role;
 use Yii;
 use yii\db\Migration;
 
@@ -18,7 +18,7 @@ class M250514064249InitAdmin extends Migration
             'role' => Role::ROLE_ADMINISTRATOR,
             'name' => 'Admin',
             'surname' => 'Admin',
-            'email' => 'root@domain.com',
+            'email' => 'root',
             'password' => Yii::$app->getSecurity()->generatePasswordHash('root'),
             'active' => true,
         ]);
