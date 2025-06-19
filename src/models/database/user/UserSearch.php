@@ -68,11 +68,7 @@ class UserSearch extends User
         if ($this->id != null) {
             $query = $query->andWhere(['=', 'id', (int)$this->id]);
         }
-        ob_start();
-        var_dump($this->role, array_key_exists($this->role, Role::getRoles()));
-        file_put_contents('/tmp/df.log', ob_get_clean() . PHP_EOL, FILE_APPEND);
-
-
+        
         if ($this->role != null && array_key_exists($this->role, Role::getRoles())) {
             $query = $query->andWhere(['=', 'role', $this->role]);
         }

@@ -13,6 +13,8 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
     const SCENARIO_EDIT_ADMIN = 'admin-edit';
     const SCENARIO_PROFILE_SHOW = 'show-profile';
 
+    const LIST_COUNT_PER_PAGE_DEFAULT = 20;
+
     public string $confirmPassword = '';
     public string $oldPassword = '';
 
@@ -36,7 +38,13 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
                 'on' => [self::SCENARIO_SIGNUP, self::SCENARIO_EDIT_SELF],
                 'message' => Yii::t('app', 'Passwords must match'),
             ],
-            ['password', 'string', 'min' => 8, 'max' => 20],
+            ['password', 'string', 'min' => 8, 'max' => 20, 'on' => self::SCENARIO_SIGNUP],
+            ['password', function ($attribute, $params, $validator) {
+                if ($this->password !== $this->getPasswordHash() && strlen($this->password) > 20) {
+                    $this->addError($attribute, 'Password should contain at most 20 characters');
+                }
+            },
+            'on' => self::SCENARIO_EDIT_SELF],
             ['password', function ($attribute, $params, $validator) {
                 if (!preg_match('/[a-z]/', $this->$attribute)) {
                     $this->addError($attribute, 'Password must contain at least one lowercase letter.');
@@ -86,6 +94,7 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
                     'email',
                     'phone_number',
                     'role',
+                    'active',
                 ],
                 self::SCENARIO_EDIT_SELF => [
                     'name',
@@ -93,9 +102,15 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
                     'password',
                     'confirmPassword',
                     'email',
+                    'phone_number',
                     ...(Yii::$app->user->getIdentity()?->role === Role::ROLE_ADMINISTRATOR
-                    ? ['role']
-                    : ['oldPassword']
+                    ? [
+                        'role',
+                        'active',
+                    ]
+                    : [
+                        'oldPassword'
+                    ]
                     ),
                 ],
                 self::SCENARIO_PROFILE_SHOW => ['visible_name'],
@@ -172,6 +187,7 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
 
     public function beforeValidate() : bool
     {
+
         if (parent::beforeValidate() === false) {
             return false;
         }
@@ -203,6 +219,7 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         $passwordChanged = $this->password !== $this->getPasswordHash();
         if ($this->email !== null && $this->email !==  $this->getOldAttribute('email')) {
             $this->active = 0;
+        }
         if ($this->validate(null, false) === false) {
             return false;
         }

@@ -7,6 +7,11 @@ $pathingRules = [
     '/login' => 'main/authentication/login',
     '/logout' => 'main/authentication/logout',
     '/signup' => 'main/authentication/signup',
+    [
+        'pattern'  => 'profile/<id:\d+>',
+        'route'    => 'main/management/profile',
+        'defaults' => ['id' => null],
+    ],
     '/inactive' => 'main/authentication/inactive',
 
     //fallback simple routing
