@@ -46,7 +46,7 @@ $isAdmin = Yii::$app->user->getIdentity()?->role === Role::ROLE_ADMINISTRATOR;
                 'items' => [
                     ...($isAdmin
                     ? [
-                            ['label' => Yii::t('app', 'Users'), 'url' => ['/user/management/profiles']],
+                            ['label' => Yii::t('app', 'Users'), 'url' => ['/management/profiles']],
                     ]
                     : []
                     )
