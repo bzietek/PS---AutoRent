@@ -10,18 +10,16 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-
-    //actions that are allowed to be accessed by ALL users (guests included)
+    // actions that are allowed to be accessed by ALL users (guests included)
     protected $allUsersActions = ['placeholder'];
 
-    //actions that are allowed to be accessed by guests and allowedRoles
+    // actions that are allowed to be accessed by guests and allowedRoles
     protected $guestActions = ['placeholder'];
-    //roles that are allowed to access all actions in the controller except guest only actions
+
+    // roles that are allowed to access all actions in the controller except guest only actions
     protected $allowedRoles = ['@'];
-    //basic RBAC
+
+    // basic RBAC
     public function behaviors()
     {
         return [
@@ -32,18 +30,18 @@ class SiteController extends Controller
                         'actions' => $this->allUsersActions,
                         'allow' => true,
                     ],
-                    //allow guests to use guest only actions
+                    // allow guests to use guest only actions
                     [
                         'actions' => $this->guestActions,
                         'allow' => true,
                         'roles' => ['?'],
                     ],
-                    //forbid guests to use any other actions
+                    // forbid guests to use any other actions
                     [
                         'allow' => false,
                         'roles' => ['?'],
                     ],
-                    //allow whitelisted users to use this controller
+                    // allow whitelisted users to use this controller
                     [
                         'allow' => true,
                         'roles' => $this->allowedRoles,
@@ -53,9 +51,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions(): array
     {
         return [
@@ -65,30 +60,34 @@ class SiteController extends Controller
         ];
     }
 
-    public function beforeAction($action) : \yii\web\Response|bool
+    public function beforeAction($action): \yii\web\Response|bool
     {
         if (parent::beforeAction($action) === false) {
             return false;
         }
+
         $user = Yii::$app->user;
         if ($user->isGuest) {
+      
             return true;
         }
+
         $user = $user->getIdentity();
         if (
             !$user->active
             && $user->role === Role::ROLE_CUSTOMER
-            && (
-                !in_array($action->actionMethod ?? 'error', [
-                    'error',
-                    'actionInactive',
-                    'actionLogout',
-                    'actionActivate',
-                ])
-            )
+            && !in_array($action->actionMethod ?? 'error', [
+                'error',
+                'actionInactive',
+                'actionLogout',
+                'actionActivate',
+            ])
         ) {
-            return $this->redirect(URL::to(['/inactive']));
+            return $this->redirect(Url::to(['/inactive']));
         }
+
         return true;
     }
+
+
 }
