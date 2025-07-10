@@ -4,27 +4,45 @@ namespace app\migrations;
 
 use yii\db\Migration;
 
-class M250703180000AddColumnsToLocations extends Migration
+class M250703180000UpdateLocationTable extends Migration
 {
     public function safeUp()
     {
-        $this->addColumn('locations', 'name', $this->string(100)->notNull());
-        $this->addColumn('locations', 'address', $this->string(255)->notNull());
-        $this->addColumn('locations', 'city', $this->string(100)->notNull());
-        $this->addColumn('locations', 'postcode', $this->string(20)->notNull());
-        $this->addColumn('locations', 'phone', $this->string(20)->defaultValue(null));
-        $this->addColumn('locations', 'is_active', $this->boolean()->defaultValue(true));
+        // Jeśli tabela LOCATION nie istnieje – utwórz ją
+        if ($this->db->schema->getTableSchema('LOCATION', true) === null) {
+            $this->createTable('LOCATION', [
+                'id' => $this->primaryKey(),
+                'zip_code' => $this->string(20)->notNull(),
+                'street_name' => $this->string(255)->notNull(),
+                'street_number' => $this->string(20)->notNull(),
+                'province' => $this->string(100)->notNull(),
+                'iso_code' => $this->string(10)->notNull(),
+            ]);
+        } else {
+            // Jeśli tabela istnieje – dodaj brakujące kolumny
+            $table = $this->db->schema->getTableSchema('LOCATION', true);
+
+            if (!isset($table->columns['zip_code'])) {
+                $this->addColumn('LOCATION', 'zip_code', $this->string(20)->notNull());
+            }
+            if (!isset($table->columns['street_name'])) {
+                $this->addColumn('LOCATION', 'street_name', $this->string(255)->notNull());
+            }
+            if (!isset($table->columns['street_number'])) {
+                $this->addColumn('LOCATION', 'street_number', $this->string(20)->notNull());
+            }
+            if (!isset($table->columns['province'])) {
+                $this->addColumn('LOCATION', 'province', $this->string(100)->notNull());
+            }
+            if (!isset($table->columns['iso_code'])) {
+                $this->addColumn('LOCATION', 'iso_code', $this->string(10)->notNull());
+            }
+        }
     }
 
     public function safeDown()
     {
-        $this->dropColumn('locations', 'name');
-        $this->dropColumn('locations', 'address');
-        $this->dropColumn('locations', 'city');
-        $this->dropColumn('locations', 'postcode');
-        $this->dropColumn('locations', 'phone');
-        $this->dropColumn('locations', 'is_active');
+        $this->dropTable('LOCATION');
     }
 }
-
 
