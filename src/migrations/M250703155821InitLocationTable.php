@@ -4,7 +4,7 @@ namespace app\migrations;
 
 use yii\db\Migration;
 
-class M250703180000AddColumnsToLocation extends Migration
+class M250703155821InitLocationTable extends Migration
 {
     public function safeUp()
     {
