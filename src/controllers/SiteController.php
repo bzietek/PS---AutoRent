@@ -66,8 +66,9 @@ class SiteController extends Controller
         if (parent::beforeAction($action) === false) {
             return false;
         }
-$user = Yii::$app->user;
+        $user = Yii::$app->user;
         if ($user->isGuest) {
+      
             return true;
         }
 
@@ -87,5 +88,7 @@ $user = Yii::$app->user;
 
         return true;
     }
+
+
 }
 
