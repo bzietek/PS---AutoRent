@@ -15,7 +15,6 @@ $pathingRules = [
     '/inactive' => 'main/authentication/inactive',
 
     //fallback simple routing
-    '/<controller:[\w-]+>' => 'main/<controller>/index',
     '/<action:[\w-]+>' => 'main/default/<action>',
     '/<controller:[\w-]+>/<action:[\w-]+>' => 'main/<controller>/<action>',
     '/<module:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>' => '<module>/<controller>/<action>',
@@ -52,6 +51,9 @@ return ArrayHelper::merge(
             ],
             'errorHandler' => [
                 'errorAction' => 'site/error',
+            ],
+                'cache' => [
+                'class' => 'yii\caching\FileCache',
             ],
         ],
     ]

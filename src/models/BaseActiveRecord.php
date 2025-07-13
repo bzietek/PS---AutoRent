@@ -20,6 +20,7 @@ class BaseActiveRecord extends \yii\db\ActiveRecord
 
     public static function sanitizeCharacters($value): string
     {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
+
 }

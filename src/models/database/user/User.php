@@ -18,59 +18,64 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
     public string $confirmPassword = '';
     public string $oldPassword = '';
 
-    public function rules()
-    {
-        return [
-            [['role'], 'default', 'value' => Role::ROLE_CUSTOMER],
-            [['id'], 'integer'],
-            [['name', 'surname', 'role'], 'string', 'max' => 40],
-            [['phone_number'], 'string', 'max' => 12],
-            [['password'], 'string', 'max' => 150],
-            [['id', 'email', 'phone_number'], 'unique'],
-            [['active'], 'boolean'],
-            ['role', 'in', 'range' => array_keys(Role::getRoles())],
-            ['email', 'email', 'message' => Yii::t('app', 'Invalid email')],
-            [['phone_number'], PhoneNumberValidator::class],
-            [
-                'password',
-                'compare',
-                'compareAttribute' => 'confirmPassword',
-                'on' => [self::SCENARIO_SIGNUP, self::SCENARIO_EDIT_SELF],
-                'message' => Yii::t('app', 'Passwords must match'),
-            ],
-            ['password', 'string', 'min' => 8, 'max' => 20, 'on' => self::SCENARIO_SIGNUP],
-            ['password', function ($attribute, $params, $validator) {
-                if ($this->password !== $this->getPasswordHash() && strlen($this->password) > 20) {
-                    $this->addError($attribute, 'Password should contain at most 20 characters');
-                }
-            },
-            'on' => self::SCENARIO_EDIT_SELF],
-            ['password', function ($attribute, $params, $validator) {
-                if (!preg_match('/[a-z]/', $this->$attribute)) {
-                    $this->addError($attribute, 'Password must contain at least one lowercase letter.');
-                }
-                if (!preg_match('/[A-Z]/', $this->$attribute)) {
-                    $this->addError($attribute, 'Password must contain at least one uppercase letter.');
-                }
-                if (!preg_match('/\d/', $this->$attribute)) {
-                    $this->addError($attribute, 'Password must contain at least one digit.');
-                }
-            },
-            'on' => self::SCENARIO_SIGNUP
-            ],
-            [['confirmPassword'], 'required', 'on' => [self::SCENARIO_SIGNUP]],
-//                [$this->attributes(), 'filter', 'filter' => [static::class, 'sanitizeCharacters'] ],
-            [['oldPassword'], 'required', 'on' => self::SCENARIO_EDIT_SELF],
-            [['oldPassword'], function ($attribute, $params, $validator) {
-                if ($this->validatePassword(
-                    $this->$attribute,
-                    $this->getPasswordHash()
-                ) === false) {
-                    $this->addError($attribute, \Yii::t('app', 'Incorrect password'));
-                }
-            }, 'on' => self::SCENARIO_EDIT_SELF],
-        ];
-    }
+public function rules()
+{
+    return [
+        [['role'], 'default', 'value' => Role::ROLE_CUSTOMER],
+        [['id'], 'integer'],
+        [['name', 'surname', 'role'], 'string', 'max' => 40,
+            'tooLong' => '{attribute} może mieć maksymalnie 40 znaków.'],
+        [['phone_number'], 'string', 'max' => 12,
+            'tooLong' => 'Numer telefonu może mieć maksymalnie 12 znaków.'],
+        [['password'], 'string', 'max' => 150,
+            'tooLong' => 'Hasło może mieć maksymalnie 150 znaków.'],
+        [['id', 'email', 'phone_number'], 'unique',
+            'message' => '{attribute} już istnieje w bazie.'],
+        [['active'], 'boolean'],
+        ['role', 'in', 'range' => array_keys(Role::getRoles()),
+            'message' => 'Nieprawidłowa rola użytkownika.'],
+        ['email', 'email', 'message' => 'Nieprawidłowy adres e-mail.'],
+        [['phone_number'], PhoneNumberValidator::class],
+        [
+            'password',
+            'compare',
+            'compareAttribute' => 'confirmPassword',
+            'on' => [self::SCENARIO_SIGNUP, self::SCENARIO_EDIT_SELF],
+            'message' => 'Hasła muszą być identyczne.',
+        ],
+        ['password', 'string', 'min' => 8, 'max' => 20, 'on' => self::SCENARIO_SIGNUP,
+            'tooShort' => 'Hasło musi mieć co najmniej 8 znaków.',
+            'tooLong' => 'Hasło może mieć maksymalnie 20 znaków.'],
+        ['password', function ($attribute, $params, $validator) {
+            if ($this->password !== $this->getPasswordHash() && strlen($this->password) > 20) {
+                $this->addError($attribute, 'Hasło może mieć maksymalnie 20 znaków.');
+            }
+        }, 'on' => self::SCENARIO_EDIT_SELF],
+        ['password', function ($attribute, $params, $validator) {
+            if (!preg_match('/[a-z]/', $this->$attribute)) {
+                $this->addError($attribute, 'Hasło musi zawierać co najmniej jedną małą literę.');
+            }
+            if (!preg_match('/[A-Z]/', $this->$attribute)) {
+                $this->addError($attribute, 'Hasło musi zawierać co najmniej jedną wielką literę.');
+            }
+            if (!preg_match('/\d/', $this->$attribute)) {
+                $this->addError($attribute, 'Hasło musi zawierać co najmniej jedną cyfrę.');
+            }
+        }, 'on' => self::SCENARIO_SIGNUP],
+        [['confirmPassword'], 'required', 'on' => [self::SCENARIO_SIGNUP],
+            'message' => 'Powtórz hasło.'],
+        [['oldPassword'], 'required', 'on' => self::SCENARIO_EDIT_SELF,
+            'message' => 'Podaj aktualne hasło.'],
+        [['oldPassword'], function ($attribute, $params, $validator) {
+            if ($this->validatePassword(
+                $this->$attribute,
+                $this->getPasswordHash()
+            ) === false) {
+                $this->addError($attribute, 'Nieprawidłowe hasło.');
+            }
+        }, 'on' => self::SCENARIO_EDIT_SELF],
+    ];
+}
 
     /**
      * @throws \Throwable
@@ -118,23 +123,24 @@ class User extends \app\models\database\generated\APPUSER implements IdentityInt
         );
     }
 
-    public function attributeLabels(): array
-    {
-        return array_merge(
-            parent::attributeLabels(),
-            [
-                'name' => Yii::t('app', 'First Name'),
-                'surname' => Yii::t('app', 'Last Name'),
-                'email' => Yii::t('app', 'Email'),
-                'phone_number' => Yii::t('app', 'Phone Number'),
-                'password' => Yii::t('app', 'Password'),
-                'confirmPassword' => Yii::t('app', 'Confirm Password'),
-//                'created_at' => Yii::t('app', 'Account creation date'),
-                'active' => Yii::t('app', 'Is account active?'),
-                'rememberMe' => Yii::t('app', 'Remember Me'),
-            ]
-        );
-    }
+public function attributeLabels(): array
+{
+    return array_merge(
+        parent::attributeLabels(),
+        [
+            'name' => 'Imię',
+            'surname' => 'Nazwisko',
+            'email' => 'Adres e-mail',
+            'phone_number' => 'Numer telefonu',
+            'password' => 'Hasło',
+            'confirmPassword' => 'Powtórz hasło',
+            'oldPassword' => 'Aktualne hasło', 
+            'active' => 'Czy konto jest aktywne?',
+            'rememberMe' => 'Zapamiętaj mnie',
+        ]
+    );
+}
+
 
     public function getAuthKey() : string {
         return sha1(

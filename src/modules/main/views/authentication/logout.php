@@ -1,6 +1,6 @@
-<p>You have been successfully logged out!</p>
-<p>You will be redirected in a couple of seconds.</p>
-<p>If it does not work please press <a href="/">here</a>.</p>
+<h2>Wylogowano pomyślnie!</h2>
+<p>Za chwilę nastąpi przekierowanie na stronę główną.</p>
+<p>Jeśli to nie nastąpi, kliknij <a href="/">tutaj</a>.</p>
 <script>
     setInterval(()=>{
         window.location.href = '/';
