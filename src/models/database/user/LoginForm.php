@@ -16,29 +16,29 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['loginField', 'password'], 'required'],
+            [['loginField', 'password'], 'required', 'message' => 'Pole {attribute} jest wymagane.'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
         ];
     }
 
+
     public function attributeLabels()
     {
-        return array_merge(Parent::attributeLabels(),
-            [
-                'loginField' => \Yii::t('app', 'Email or Phone Number'),
-                'password' => \Yii::t('app', 'Password'),
-                'rememberMe' => \Yii::t('app', 'Remember me'),
-            ]
-        ) ;
+        return [
+            'loginField' => 'Email lub numer telefonu',
+            'password' => 'Hasło',
+            'rememberMe' => 'Zapamiętaj mnie',
+        ];
     }
+
 
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect email/phone number or password.');
+                $this->addError($attribute, 'Nieprawidłowy email/numer telefonu lub hasło.');
             }
         }
     }

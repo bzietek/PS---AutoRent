@@ -1,3 +1,4 @@
+
 <?php
 
 namespace app\controllers;
@@ -65,7 +66,6 @@ class SiteController extends Controller
         if (parent::beforeAction($action) === false) {
             return false;
         }
-
         $user = Yii::$app->user;
         if ($user->isGuest) {
       
@@ -91,3 +91,4 @@ class SiteController extends Controller
 
 
 }
+

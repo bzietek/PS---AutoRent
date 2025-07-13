@@ -6,7 +6,7 @@ use yii\validators\Validator;
 
 class PhoneNumberValidator extends Validator
 {
-    public string $pattern = '/^\+?[0-9]{9,11}$/'; // Modify as needed
+    public string $pattern = '/^\+?[0-9]{9,11}$/';
 
     public function validateAttribute($model, $attribute): void
     {

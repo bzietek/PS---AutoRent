@@ -27,5 +27,5 @@ $form = ActiveForm::begin([
 <?= $form->field($model, 'password')->passwordInput(); ?>
 <?= $form->field($model, 'confirmPassword')->passwordInput(); ?>
 
-<?= Html::submitButton(Yii::t('app', 'sign up'), ['class' => 'btn btn-primary']); ?>
+<?= Html::submitButton('Zarejestruj się', ['class' => 'btn btn-primary w-100', 'style' => 'margin-top:24px;']) ?>
 <?php ActiveForm::end(); ?>

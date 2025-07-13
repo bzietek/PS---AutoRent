@@ -24,3 +24,4 @@ class M250703155821InitLocationTable extends Migration
         $this->dropColumn('LOCATION', 'iso_code');
     }
 }
+

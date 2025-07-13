@@ -1,32 +1,28 @@
 <?php
-
-use app\models\database\user\LoginForm;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var LoginForm $model */
+$this->title = 'Logowanie';
+?>
 
+<h1 class="mb-4 text-center">Logowanie</h1>
 
-$form = ActiveForm::begin([
-    'action' => ['/login'],
-    'method' => 'POST',
+<?php $form = ActiveForm::begin([
     'id' => 'login-form',
     'fieldConfig' => [
         'template' => "{label}\n{input}\n{error}",
-        'labelOptions' => ['class' => 'col-lg-4 col-form-label mr-lg-3'],
-        'inputOptions' => ['class' => 'col-lg-3 form-control'],
-        'errorOptions' => ['class' => 'col-lg-7 text-danger'],
+        'labelOptions' => ['class' => 'col-form-label'],
+        'inputOptions' => ['class' => 'form-control'],
+        'errorOptions' => ['class' => 'text-danger'],
     ],
+]); ?>
 
-    'enableClientValidation' => true,
-]);
-?>
+<?= $form->field($model, 'loginField')->textInput(['placeholder' => 'Email lub numer telefonu'])->label('Email lub numer telefonu') ?>
+<?= $form->field($model, 'password')->passwordInput(['placeholder' => 'Hasło'])->label('Hasło') ?>
+<?= $form->field($model, 'rememberMe')->checkbox() ?>
 
-<?= $form->field($model, 'loginField')->textInput(['autofocus' => true]); ?>
-<?= $form->field($model, 'password')->passwordInput(); ?>
-<?= $form->field($model, 'rememberMe')->checkbox([
-    'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-]) ?>
+<div class="form-group" style="margin-top: 24px;">
+    <?= Html::submitButton('Zaloguj się', ['class' => 'btn btn-primary w-100']) ?>
+</div>
 
-<?= Html::submitButton(Yii::t('app', 'login'), ['class' => 'btn btn-primary']); ?>
 <?php ActiveForm::end(); ?>

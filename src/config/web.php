@@ -21,24 +21,18 @@ $pathingRules = [
 ];
 
 return ArrayHelper::merge(
-    require __DIR__ . '/common.php',
+    require DIR . '/common.php',
     [
         'components' => [
             'request' => [
-                // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
                 'cookieValidationKey' => '2lE28pun0hQpCrp12lmHNK9hPP2Xulo2',
             ],
-    //        'cache' => [
-    //            'class' => 'yii\caching\FileCache',
-    //        ],
             'urlManager' => [
                 'enablePrettyUrl' => true,
                 'showScriptName' => false,
                 'rules' => $pathingRules,
                 'normalizer' => [
                     'class' => 'yii\web\UrlNormalizer',
-    //                'collapseSlashes' => true, // Collapse consecutive slashes into one
-    //                'normalizeTrailingSlash' => true, // Remove/add trailing slash based on rules
                 ],
             ],
             'user' => [
@@ -52,6 +46,9 @@ return ArrayHelper::merge(
             'errorHandler' => [
                 'errorAction' => 'site/error',
             ],
+            'cache' => [
+                'class' => 'yii\caching\FileCache',
+            ],
         ],
     ]
-    );
+);

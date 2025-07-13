@@ -41,3 +41,4 @@ class DefaultController extends SiteController
         throw new HttpException(403);
     }
 }
+
