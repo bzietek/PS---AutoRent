@@ -1,4 +1,6 @@
 <?php
+
+use app\models\database\car\Car;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -6,6 +8,8 @@ $form = ActiveForm::begin([
     'id' => 'car-add-form',
     'enableClientValidation' => true,
 ]);
+
+/** @var Car $model */
 ?>
 
 <?= $form->field($model, 'brand')->textInput(['maxlength' => true]) ?>

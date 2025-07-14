@@ -18,7 +18,7 @@ class Brand
             self::BRAND_BMW => Yii::t('app', 'BMW'),
             self::BRAND_CITROEN => Yii::t('app', 'Citroen'),
             self::BRAND_TOYOTA => Yii::t('app', 'Toyota'),
-            self::BRAND_TOYOTA => Yii::t('app', 'Nissan'),
+            self::BRAND_NISSAN => Yii::t('app', 'Nissan'),
         ];
     }
 }

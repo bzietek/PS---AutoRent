@@ -1,8 +1,12 @@
 <?php
+
+use app\models\database\user\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Logowanie';
+
+/** @var User $model */
 ?>
 
 <h1 class="mb-4 text-center">Logowanie</h1>

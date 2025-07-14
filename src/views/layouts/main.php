@@ -36,7 +36,6 @@ $isServiceEngineer = Yii::$app->user->getIdentity()?->role === Role::ROLE_SERVIC
     <?php $this->head() ?>
 </head>
 <body class="d-flex flex-column h-100 bg-light">
-<body class="d-flex flex-column h-100 bg-light">
 <?php $this->beginBody() ?>
 
 <header id="header" class="shadow-sm">
@@ -44,9 +43,7 @@ $isServiceEngineer = Yii::$app->user->getIdentity()?->role === Role::ROLE_SERVIC
     <?php
         NavBar::begin([
             'brandLabel' => Html::tag('span', Yii::$app->name, ['class' => 'fw-bold']),
-            'brandLabel' => Html::tag('span', Yii::$app->name, ['class' => 'fw-bold']),
             'brandUrl' => Yii::$app->homeUrl,
-            'options' => ['class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top']
             'options' => ['class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top']
         ]);
     ?>
