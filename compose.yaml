@@ -1,7 +1,4 @@
 services:
-  
-
-# TODO: add env file to read the .env
   app:
     platform: linux/amd64
     image: php-oracle
@@ -22,6 +19,4 @@ services:
 #      USER_GID: 1000
     volumes:
       - '.:/app'
-
-
-     
+      -
